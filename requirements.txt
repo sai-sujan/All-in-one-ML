@@ -173,7 +173,6 @@ python-dateutil==2.8.1
 pytz==2020.1
 pytz-deprecation-shim==0.1.0.post0
 PyWavelets==1.2.0
-pywin32==303
 pywinpty==0.5.7
 PyYAML==6.0
 pyzmq==22.3.0
