@@ -193,6 +193,10 @@ if datafile is not None:
             st.write(best_pipeline.score(X_test, y_test, objectives=["R2", "Root Mean Squared Error", "MaxError"]))
         #st.write(automl_auc.best_pipeline)  # best pipeline
 
+    if st.button('Download Model'):
+        st.download_button('UI for user/model.pkl')
+    if st.button('Download EDA Report'):
+        st.download_button('UI for user/report.html')
 
 
 
