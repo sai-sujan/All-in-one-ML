@@ -51,7 +51,8 @@ asyncio.set_event_loop(loop)
 # visualize as html file for user when he click visualize button
 # if the EDA type is 3
 # It automatically visualizes
-
+#streamlite heading
+st.header("All in One ML")
 datafile = st.file_uploader("Upload CSV", type=['csv'])
 
 
