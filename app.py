@@ -92,17 +92,17 @@ if datafile is not None:
     df = pd.read_csv(datafile)
     profile = ProfileReport(df, title="Pandas Profiling Report")
     report = profile.to_file("UI for user/report.html")
-    #report = create_report(df)
-    #report.to_html('UI for user/report.html')
     if st.button('Visualize data'):
-
         # load the report.html file and display it
-        st.header("test html import")
+        st.header("EDA")
 
         HtmlFile = open("UI for user/report.html", 'r', encoding='utf-8')
         source_code = HtmlFile.read()
-        #print(source_code)
-        components.html(source_code,height=1000,width=800,scrolling=True)
+        # print(source_code)
+        components.html(source_code, height=800, width=800, scrolling=True)
+    #report = create_report(df)
+    #report.to_html('UI for user/report.html')
+
     st.dataframe(df)
     save_uploadedfile(datafile)
     df = pd.read_csv('data/data.csv')
@@ -124,14 +124,18 @@ if datafile is not None:
         metrics = st.multiselect('Select the metrics to be used for evaluation', ['R2'])
 
     # store target column, problem type and metrics in a json file
-    with open('data/data.json', 'w') as f:
-        # clear the data in the json file
-        f.write('')
-        json.dump({"target_variable": target_variable, "problem_type": problem_type, "metrics": metrics[0]}, f)
-    with open('UI for user/data.json', 'w') as f:
-        f.write('')
-        json.dump({"target_variable": target_variable, "problem_type": problem_type, "metrics": metrics[0]}, f)
-    # create a submit button
+    try:
+        with open('data/data.json', 'w') as f:
+            # clear the data in the json file
+            f.write('')
+            json.dump({"target_variable": target_variable, "problem_type": problem_type, "metrics": metrics[0]}, f)
+        with open('UI for user/data.json', 'w') as f:
+            f.write('')
+            json.dump({"target_variable": target_variable, "problem_type": problem_type, "metrics": metrics[0]}, f)
+        # create a submit button
+    except Exception as e:
+        print(e)
+
     if st.button('Train'):
         # load the json file
         with open('data/data.json', 'r') as f:
@@ -187,6 +191,7 @@ if datafile is not None:
         else:
             st.write(best_pipeline.score(X_test, y_test, objectives=["R2", "Root Mean Squared Error", "MaxError"]))
         #st.write(automl_auc.best_pipeline)  # best pipeline
+
 
 
 
