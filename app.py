@@ -117,9 +117,9 @@ if datafile is not None:
     print(remove_cols)
     target_variable = st.selectbox('Select the column to be used as the target variable', cols)
     remove_unwanted_columns(df, unwanted_columns, remove_cols)
-    problem_type = st.selectbox('Select the problem type', ['Classification', 'Regression'])
+    problem_type = st.selectbox('Select the problem type', ['Binary', 'Regression'])
 
-    if problem_type == 'Classification':
+    if problem_type == 'Binary':
         metrics = st.multiselect('Select the metrics to be used for evaluation', ['auc', 'f1', 'Precision', 'Recall'])
     else:
         metrics = st.multiselect('Select the metrics to be used for evaluation', ['R2'])
