@@ -90,7 +90,7 @@ if datafile is not None:
 
 
     file_details = {"FileName": datafile.name, "FileType": datafile.type}
-    df = pd.read_csv(datafile)
+    df = pd.read_csv(datafile,on_bad_lines='skip')
     profile = ProfileReport(df, title="Pandas Profiling Report")
     report = profile.to_file("UI for user/report.html")
     if st.button('Visualize data'):
@@ -117,9 +117,9 @@ if datafile is not None:
     print(remove_cols)
     target_variable = st.selectbox('Select the column to be used as the target variable', cols)
     remove_unwanted_columns(df, unwanted_columns, remove_cols)
-    problem_type = st.selectbox('Select the problem type', ['Binary', 'Regression'])
+    problem_type = st.selectbox('Select the problem type', ['binary', 'regression'])
 
-    if problem_type == 'Binary':
+    if problem_type == 'binary':
         metrics = st.multiselect('Select the metrics to be used for evaluation', ['auc', 'f1', 'Precision', 'Recall'])
     else:
         metrics = st.multiselect('Select the metrics to be used for evaluation', ['R2'])
@@ -153,7 +153,7 @@ if datafile is not None:
         metrics1 = jss['metrics']
         df1 = pd.read_csv('Data_files/preprocessed_data.csv')
 
-        #import evalml
+        import evalml
         from evalml.automl import AutoMLSearch
 
         X = df.drop([target_variable1], axis=1)
@@ -164,13 +164,15 @@ if datafile is not None:
        # X_train, X_test, y_train, y_test = evalml.preprocessing.split_data(X, y, problem_type=problem_type1)
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
-        if problem_type1 == 'Classification':
+        if problem_type1 == 'binary':
             automl_auc = AutoMLSearch(X_train=X_train, y_train=y_train,
                                       problem_type=problem_type1,
                                       objective=str(metrics1),
-                                      additional_objectives=['f1', 'precision', 'recall', 'auc'],
+                                      additional_objectives=['auc'],
                                       max_batches=1,
                                       optimize_thresholds=True)
+
+
         else:
             automl_auc = AutoMLSearch(X_train=X_train, y_train=y_train,
                                       problem_type=problem_type1,
@@ -180,13 +182,15 @@ if datafile is not None:
                                                              "MAE"],
                                       max_batches=1,
                                       optimize_thresholds=True)
+
+
         automl_auc.search()
         best_pipeline = automl_auc.best_pipeline
         st.write(automl_auc.describe_pipeline(automl_auc.rankings.iloc[0]["id"],return_dict=True))  # describe pipeline
         st.write(automl_auc.rankings)  # ranking of pipelines
         best_pipeline.save('Data_files/model.pkl')
         best_pipeline.save('UI for user/model.pkl')
-        if problem_type1 == 'Classification':
+        if problem_type1 == 'binary':
             st.write(
                 best_pipeline.score(X_test, y_test, objectives=["auc", "f1", "Precision", "Recall"]))
         else:
